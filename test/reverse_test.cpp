@@ -41,7 +41,12 @@ void loadStudents(Student *students, int count)
 
 void loadStudents(Student **students, int count)
 {
-    // TODO
+    int i = 0;
+	processStudents(CSV_FILENAME, count, [students,&i](int id, string firstName, string lastName, string email, string address) {
+        Student *student = new Student;
+        setStudent(student, id, firstName, lastName, email, address);
+        students[i++] = student;
+	});
 }
 
 TEST_CASE("Arrays of structs can be reversed") {
@@ -64,6 +69,27 @@ TEST_CASE("Arrays of structs can be reversed") {
 }
 
 TEST_CASE("Arrays of pointers to structs can be reversed") {
-    // TODO
-    // Note: Don't forget to free all memory that you allocate!
+    Student **students = new Student*[STUDENT_COUNT];
+    loadStudents(students, STUDENT_COUNT);
+    reverse(students, STUDENT_COUNT);
+    for (int i = 0; i < STUDENT_COUNT; i++) {
+        REQUIRE(students[i]->id == STUDENT_COUNT - i);
+    }
+    for (int i = 0; i < STUDENT_COUNT; i++) {
+        delete students[i];
+    }
+    delete [] students;
+
+    BENCHMARK_ADVANCED("Reversing pointers to structs")(Catch::Benchmark::Chronometer meter) {
+        int studentCount = countCSVRows(CSV_FILENAME);
+        Student **students = new Student*[studentCount];
+        loadStudents(students, studentCount);
+        meter.measure([&students,studentCount] {
+            reverse(students, studentCount);
+        });
+        for (int i = 0; i < studentCount; i++) {
+            delete students[i];
+        }
+        delete [] students;
+    };
 }

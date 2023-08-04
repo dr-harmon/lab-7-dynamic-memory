@@ -4,6 +4,13 @@
 template <typename T>
 void reverse(T *array, int arraySize)
 {
-    // TODO: Implement an algorithm that reverses the contents of the array.
-    // Note: You must perform the reversal in-place. Do not allocate another array.
+    int i = 0;
+    int j = arraySize - 1;
+    while (i < j) {
+        T temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+        i++;
+        j--;
+    }
 }

@@ -11,7 +11,7 @@ const string CSV_FILENAME = "students.csv";
 void printStudents(Student **students, int studentCount)
 {
 	for (auto i = 0; i < studentCount; i++) {
-		// TODO
+		cout << students[i]->firstName << " " << students[i]->lastName  << endl;
 	}
 }
 
@@ -19,12 +19,12 @@ int main()
 {
 	int i = 0;
 	int maxStudents = 5;
-
-	// TODO: Allocate an array of pointers to Student structs and call it "students"
+	Student **students = new Student*[maxStudents];
 
 	processStudents(CSV_FILENAME, maxStudents, [students,&i](int id, string firstName, string lastName, string email, string address) {
-		// TODO: Allocate a new Student struct and copy the parameters to it.
-		// Hint: Use the setStudent helper function.
+		Student *student = new Student;
+		setStudent(student, id, firstName, lastName, email, address);
+		students[i++] = student;
 	});
 
 	printStudents(students, maxStudents);
@@ -32,7 +32,11 @@ int main()
 	cout << endl;
 	printStudents(students, maxStudents);
 
-	// TODO: Free all allocated memory
+	for (i = 0; i < maxStudents; i++) {
+		delete students[i];
+	}
+
+	delete [] students;
 
 	return EXIT_SUCCESS;
 }
